@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_promote_search" model="ir.ui.view">
+        <field name="name">hr.promotion.search</field>
+        <field name="model">hr.promotion</field>
+        <field name="arch" type="xml">
+            <search string="Promotion">
+                <field name="name" string="Promote Type" filter_domain="['|', ('name', 'ilike', self)]"/>
+                <field name="type_id"/>
+                <field name="employee_id"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]" help="Draft Promote Record"/>
+                <filter name="confirm" string="Confirm" domain="[('state', '=', 'confirm')]" help="Confirm Promote Record"/>
+                <filter name="waiting" string="To Start" domain="[('state', '=', 'waiting')]" help="waiting to start Promote Record"/>
+                <filter name="done" string="Done" domain="[('state', '=', 'done')]" help="Done Promote Record"/>
+                <filter name="cancel" string="Cancelled" domain="[('state', '=', 'cancel')]" help="Cancelled Promote Record"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="status" domain="[]" context="{'group_by': 'state'}"/>
+                    <filter string="date" name="date" domain="[]" context="{'group_by': 'date'}"/>
+                    <filter string="start Date" name="start_date" domain="[]" context="{'group_by': 'start_date'}"/>
+                    <filter string="Promote Type" name="promote_type" domain="[]" context="{'group_by': 'type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hr_promote_tree_view" model="ir.ui.view">
+        <field name="name">hr.promotion.tree.view</field>
+        <field name="model">hr.promotion</field>
+        <field name="arch" type="xml">
+            <tree name="Promote">
+                <field name="name" />
+                <field name="date" />
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="type_id" />
+                <field name="job_id" />
+                <field name="new_job_id" />
+                <field name="start_date" />
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state" decoration-success="state == 'done' or state == 'lock'" decoration-danger="state == 'cancel'" decoration-info="state == 'draft' or state == 'confirm'" widget="badge" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_promote_form_view" model="ir.ui.view">
+        <field name="name">hr.promotion.form.view</field>
+        <field name="model">hr.promotion</field>
+        <field name="arch" type="xml">
+            <form string="Warning Notice">
+                <header>
+                     <button name="action_confirm"
+                        string="Confirm" type="object"  class="btn-primary"
+                        attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
+                    <button name="action_validate"
+                        string="validate" type="object"  class="btn-primary"
+                        attrs="{'invisible': [('state', 'not in', ['confirm'])]}"/>
+                    <button name="action_send_letter"
+                        string="Send Email" type="object"  class="btn-primary"
+                        attrs="{'invisible': [('state', 'not in', ('waiting','done'))]}"/>
+                    <button name="action_draft" type="object" string="Set to Draft"  attrs="{'invisible': [('state', 'in', ('waiting','done'))]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group name="warning_header">
+                        <group name="promote_employee">
+                            <field name="employee_id" widget="many2one_avatar_employee"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible='1'/>
+                            <field name="type_id"/>
+                            <field name="code" required='1' invisible='1'/>
+                        </group>
+                        <group name="promote_details">
+                            <field name="date"/>
+                            <field name="start_date"  attrs="{'readonly': [('state', 'in', ('waiting','done'))]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detail Information" name="detail_information">
+                            <group name="promote_information">
+                                <group name="old_employee_information" string="Current Position">
+                                    <field name="company_id" readonly='1' force_save="1" attrs="{'invisible': [('code', '!=', 'external')]}"/>
+                                    <field name="department_id" readonly='1' force_save="1"/>
+                                    <field name="employee_type_id" readonly='1' force_save="1" options="{'no_open': True}"/>
+                                    <field name="job_id" readonly='1' force_save="1"/>
+                                    <field name="parent_id" readonly='1' force_save="1" />
+                                    <field name="coach_id" readonly='1' force_save="1" />
+                                    <field name="resource_calendar_id" readonly='1' force_save="1"/>
+                                    <field name="contract_id" invisible="1" force_save="1" />
+                                </group>
+                                <group name="new_employee_information" string="New Position">
+                                    <field name="transfer_company_id" attrs="{'invisible': [('code', '!=', 'external')],'required':[('code', '=', 'external')]}"/>
+                                    <field name="new_department_id"  attrs="{'invisible': [('code', '=', 'external')]}" />
+                                    <field name="new_employee_type_id" options="{'no_open': True}"/>
+                                    <field name="new_job_id" attrs="{'invisible': [('code', '=', 'external')]}"/>
+                                    <field name="new_parent_id" attrs="{'invisible': [('code', '=', 'external')]}"/>
+                                    <field name="new_coach_id" attrs="{'invisible': [('code', '=', 'external')]}"/>
+                                    <field name="new_resource_calendar_id" />
+                                    <field name="new_contract_id" invisible="1" />
+                                </group>
+                                <group name="old_employee_information" string="Current Monthly Advantages" attrs="{'invisible': [('code', '=', 'external')]}">
+                                    <label for="wage_salary"/>
+                                    <div class="o_row">
+                                        <field name="wage_salary" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="da"/>
+                                    <div class="o_row">
+                                        <field name="da" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="achievement_allowance"/>
+                                    <div class="o_row">
+                                        <field name="achievement_allowance" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="attendance_allowance"/>
+                                    <div class="o_row">
+                                        <field name="attendance_allowance" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="travel_allowance"/>
+                                    <div class="o_row">
+
+                                        <field name="travel_allowance" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="meal_allowance"/>
+                                    <div class="o_row">
+
+                                        <field name="meal_allowance" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="medical_allowance"/>
+                                    <div class="o_row">
+
+                                        <field name="medical_allowance" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="other_allowance"/>
+                                    <div class="o_row">
+
+                                        <field name="other_allowance" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                </group>
+                                <group name="new_employee_information" string="New Monthly Advantages" attrs="{'invisible': [('code', '=', 'external')]}">
+                                    <label for="new_wage_salary"/>
+                                    <div class="o_row">
+                                        <field name="new_wage_salary" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="new_da"/>
+                                    <div class="o_row">
+                                        <field name="new_da" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="new_achievement_allowance"/>
+                                    <div class="o_row">
+                                        <field name="new_achievement_allowance" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="new_attendance_allowance"/>
+                                    <div class="o_row">
+                                        <field name="new_attendance_allowance" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="new_travel_allowance"/>
+                                    <div class="o_row">
+
+                                        <field name="new_travel_allowance" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="new_meal_allowance"/>
+                                    <div class="o_row">
+
+                                        <field name="new_meal_allowance" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="new_medical_allowance"/>
+                                    <div class="o_row">
+
+                                        <field name="new_medical_allowance" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                    <label for="new_other_allowance"/>
+                                    <div class="o_row">
+
+                                        <field name="new_other_allowance" nolabel="1"/>
+                                        <span>/ month</span>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Other Information" name="other_information">
+                            <group>
+                                <group name="hr_staff_information" string="HR Information">
+                                    <field name="hr_staff_uid" domain="[('share', '=', False)]" widget="many2one_avatar_user"/>
+                                    <field name="hr_staff_signature" widget="image" invisible="1"/>
+                                    <field name="cc_ids" widget="many2many_tags"/>
+                                    <field name="create_date" string="created Date"/>
+                                </group>
+                            </group>
+                            <group string="Internal Notes">
+                                <field name="note" nolabel="1" placeholder="This note is only for internal purposes."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+     <record id="hr_promote_internal_action" model="ir.actions.act_window">
+        <field name="name">Internal</field>
+        <field name="res_model">hr.promotion</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('code','=','internal')]</field>
+        <field name="context">{
+                'default_code': 'internal',
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Record found. Let's create one!
+            </p><p>
+            </p>
+        </field>
+    </record>
+
+    <record id="hr_promote_external_action" model="ir.actions.act_window">
+        <field name="name">Transfer </field>
+        <field name="res_model">hr.promotion</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('code','=','external')]</field>
+        <field name="context">{
+                'default_code': 'external',
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Record found. Let's create one!
+            </p><p>
+            </p>
+        </field>
+    </record>
+
+    <record id="hr_promote_action_ready" model="ir.actions.act_window">
+        <field name="name">To Do</field>
+        <field name="res_model">hr.promotion</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain"></field>
+        <field name="context">{'search_default_draft': 1}</field>
+        <field name="search_view_id" ref="view_hr_promote_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Record found. Let's create one!
+            </p><p>
+            </p>
+        </field>
+    </record>
+
+    <record id="hr_promote_action_waiting" model="ir.actions.act_window">
+        <field name="name">To Validate</field>
+        <field name="res_model">hr.promotion</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain"></field>
+        <field name="context">{'search_default_confirm': 1}</field>
+        <field name="search_view_id" ref="view_hr_promote_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Record found. Let's create one!
+            </p><p>
+            </p>
+        </field>
+    </record>
+
+    <record id="hr_promote_action_to_start" model="ir.actions.act_window">
+        <field name="name">To Start</field>
+        <field name="res_model">hr.promotion</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain"></field>
+        <field name="context">{'search_default_waiting': 1}</field>
+        <field name="search_view_id" ref="view_hr_promote_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Record found. Let's create one!
+            </p><p>
+            </p>
+        </field>
+    </record>
+
+     <record id="hr_promote_action" model="ir.actions.act_window">
+        <field name="name">All</field>
+        <field name="res_model">hr.promotion</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hr_promote_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Record found. Let's create one!
+            </p><p>
+            </p>
+        </field>
+    </record>
+
+    <record id="action_promote_form" model="ir.actions.act_window">
+        <field name="name">New Record</field>
+        <field name="res_model">hr.promotion</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'search_default_draft': 1}</field>
+        <field name="search_view_id" ref="view_hr_promote_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Record found. Let's create one!
+            </p><p>
+            </p>
+        </field>
+    </record>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.hr.promote</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="70"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='employee_rights_setting_container']" position="after">
+                <h2>Employee Promotion Demotion and Mutation</h2>
+                 <div class="row mt16 o_settings_container" name="hr_promote_setting_container">
+                    <div class="col-12 col-lg-6 o_setting_box" id="promote_email_setting" groups="base.group_no_one">
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Promote Email</span>
+                            <div class="text-muted">
+                                Default promote mail template
+                            </div>
+                            <div class="row mt16">
+                                <label for="hr_promote_template_id" string="Email Template" class="col-lg-4 o_light_label"/>
+                                <field name="hr_promote_template_id" class="oe_inline"/>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

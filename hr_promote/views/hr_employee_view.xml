@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_cc_tree_view" model="ir.ui.view">
+        <field name="name">hr.employee.type.tree.view</field>
+        <field name="model">hr.employee.type</field>
+        <field name="arch" type="xml">
+            <tree name="Employee Type" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_employee_type_action" model="ir.actions.act_window">
+        <field name="name">Employee Type</field>
+        <field name="res_model">hr.employee.type</field>
+        <field name="view_mode">tree,form</field>
+         <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new promote cc first
+            </p><p>
+                Example:
+                - Human resource department
+                - directur
+            </p>
+        </field>
+    </record>
+
+    <record id="hr_employee_form_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.view.buttons</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form" />
+        <field name="arch" type="xml">
+            <field name="department_id" position="after">
+                <field name="employee_type_id" options="{'no_open': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_contract_form_inherit" model="ir.ui.view">
+        <field name="name">hr.contract.view.form.inherit</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='job_id']" position="after">
+                <field name="employee_type_id" required="1"/>
+            </xpath>
+            <xpath expr="//page[@name='information']" position="after">
+                <page name="other" position="move"/>
+            </xpath>
+            <xpath expr="//group[@name='salary_and_advantages']" position="after">
+                <group string="Monthly Advantages in Cash" name='allowances'>
+                    <label for="da"/>
+                    <div class="o_row">
+                        <field name="da" nolabel="1"/>
+                        <span>/ month</span>
+                    </div>
+                    <label for="travel_allowance"/>
+                    <div class="o_row">
+
+                        <field name="travel_allowance" nolabel="1"/>
+                        <span>/ month</span>
+                    </div>
+                    <label for="meal_allowance"/>
+                    <div class="o_row">
+
+                        <field name="meal_allowance" nolabel="1"/>
+                        <span>/ month</span>
+                    </div>
+                    <label for="medical_allowance"/>
+                    <div class="o_row">
+
+                        <field name="medical_allowance" nolabel="1"/>
+                        <span>/ month</span>
+                    </div>
+                    <label for="other_allowance"/>
+                    <div class="o_row">
+
+                        <field name="other_allowance" nolabel="1"/>
+                        <span>/ month</span>
+                    </div>
+                    <label for="achievement_allowance"/>
+                    <div class="o_row">
+                        <field name="achievement_allowance" nolabel="1"/>
+                        <span>/ month</span>
+                    </div>
+                    <label for="attendance_allowance"/>
+                    <div class="o_row">
+                        <field name="attendance_allowance" nolabel="1"/>
+                        <span>/ month</span>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

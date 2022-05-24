@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="email_template_promote" model="mail.template">
+        <field name="name">Promote Letter: Send by email</field>
+        <field name="model_id" ref="hr_promote.model_hr_promotion"/>
+        <field name="subject">${object.company_id.name} ${object.type_id.name} (Ref ${object.name or 'n/a' })</field>
+        <field name="email_from">${(object.create_uid.email_formatted or user.email_formatted) | safe}</field>
+        <field name="partner_to">${object.employee_id.address_home_id.id}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Hello,${object.employee_id.name}
+        <br/><br/>
+        In order to obtain optimum results and in accordance with the development of the company
+        nowadays, it is deemed necessary to carry out ${object.type_id.name} environmental employees ${object.company_id.name}
+        <br/><br/>
+        Starting ${object.start_date}, the company will ${object.type_id.name} as follows:
+        <br/>Name: ${object.employee_id.name}
+        <br/>Identification Id : ${object.employee_id.identification_id}
+        <br/><br/>
+        <table width="100%" style="color: #454748; font-size: 12px; border-collapse: collapse;">
+            <tr style="border-bottom: 2px solid #dee2e6;">
+                <td width="30%"><strong>Description</strong></td>
+                <td align="center"><strong>Current</strong></td>
+                <td align="center"><strong>New</strong></td>
+            </tr>
+                % if object.code in 'external':
+                    <tr style="'background-color: #f2f2f2';">
+                        <td>Company</td>
+                        <td><span>${object.company_id.name}</span></td>
+                        <td><span>${object.transfer_company_id.name}</span></td>
+                    </tr>
+                % endif
+                % if object.code not in 'external':
+                    <tr style="'background-color: #ffffff';">
+                        <td>Job Position</td>
+                        <td><span>${object.job_id.name}</span></td>
+                        <td><span>${object.new_job_id.name}</span></td>
+                    </tr>
+                    <tr style="'background-color: #f2f2f2';">
+                        <td>Department</td>
+                        <td><span>${object.department_id.name}</span></td>
+                        <td><span>${object.new_department_id.name}</span></td>
+                    </tr>
+                    <tr style="'background-color: #ffffff';">
+                        <td>Employee Type</td>
+                        <td><span>${object.employee_type_id.name}</span></td>
+                        <td><span>${object.new_employee_type_id.name}</span></td>
+                    </tr>
+                % endif
+            </table>
+        <br/><br/>
+        The probationary period as a ${object.new_job_id.name} is for 3 month. In carrying out duties at
+        The positions above are under and responsible to ${object.new_parent_id.name} as ${object.new_parent_id.job_id.name}
+        at ${object.company_id.name}.
+        <br/><br/>
+        Best wishes,
+        <br/>
+        ${object.hr_staff_uid.name}
+        <br/>
+        ${object.hr_staff_uid.signature | safe}
+
+    </p>
+</div>
+        </field>
+        <field name="report_template" ref="action_promotion_report"/>
+        <field name="report_name">${(object.name or '').replace('/','_')}</field>
+        <field name="lang">${object.employee_id.user_id.lang}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="default_promote_template" model="ir.config_parameter">
+        <field name="key">hr_promote.default_promote_template</field>
+        <field name="value" ref="hr_promote.email_template_promote"/>
+    </record>
+
+</odoo>

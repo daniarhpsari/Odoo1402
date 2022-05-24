@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem name="Promote"
+        id="menu_promote_root"
+        groups="hr.group_hr_user"
+        web_icon="hr_promote,static/description/icon.png">
+        <menuitem id="menu_action_promote_overview" action="hr_promote_overview_action" sequence="1"/>
+        <menuitem id="menu_promotion_menu_action" name="Operations" sequence="2" groups="hr.group_hr_user">
+            <menuitem id="menu_action_promote_internal" action="hr_promote_internal_action" sequence="1"/>
+            <menuitem id="menu_action_promote_external" action="hr_promote_external_action" sequence="2"/>
+        </menuitem>
+        <menuitem id="menu_promotion_configuration" name="Configuration" sequence="35" groups="hr.group_hr_manager">
+            <menuitem id="hr_promote_menu_configuration" name="Settings" sequence="0" action="hr.hr_config_settings_action" groups="base.group_system"/>
+            <menuitem id="menu_action_promote_type" action="hr_promote_type_action" sequence="3"/>
+            <menuitem id="menu_action_promote_cc" action="hr_promote_cc_action" sequence="4"/>
+        </menuitem>
+    </menuitem>
+
+    <!-- Inherit MenuItems -->
+
+    <menuitem
+        id="hr_employee_type_menu"
+        name="Employee Type"
+        action="hr_employee_type_action"
+        parent="hr.menu_human_resources_configuration"
+        sequence="2"/>
+
+        
+
+</odoo>

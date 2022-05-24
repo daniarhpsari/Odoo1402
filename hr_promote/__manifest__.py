@@ -1,0 +1,32 @@
+# -*- coding: utf-8 -*-
+{
+    'name': "Promote, Demote and Mutation",
+    'summary': "This module helps you to track promotions,demotion and mutation applied to employees, it allows you to change employee's job title, manager, contract , salary structure and more, all information will be saved in employee master",
+    'author': "Kelvzxu",
+    'website': "https://kltech-intl.odoo.com/",
+    'category': 'Human Resources',
+    'version': '0.1',
+    'depends': ['hr', 'hr_contract'],
+    'data': [
+        'security/ir.model.access.csv',
+        'security/hr_promote_security.xml',
+        'report/hr_promote_report.xml',
+        'report/hr_promote_report_view.xml',
+        'data/hr_promote_mail.xml',
+        'data/hr_promote_cron_data.xml',
+        'views/hr_promote_view.xml',
+        'views/hr_employee_view.xml',
+        'views/hr_promote_type_view.xml',
+        'views/hr_promote_cc_view.xml',
+        'views/hr_promote_menuitem.xml',
+        'wizard/hr_promote_wizard.xml',
+    ],
+    'images': ['static/description/banner.jpg'],
+    'demo':[
+        'data/hr_data_demo.xml',
+    ],
+    'application': True,
+    'auto_install': False,
+    'price': 25.00,
+    'currency': 'EUR',
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Multi Company Rule -->
+    <record model="ir.rule" id="record_hr_promote_multi_company_rule">    
+        <field name="name">Multicompany Rule Hr Promote</field>    
+        <field name="model_id" ref="model_hr_promotion"/>      
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record model="ir.rule" id="record_hr_promote_type_multi_company_rule">    
+        <field name="name">Multicompany Rule Hr Promote Type</field>    
+        <field name="model_id" ref="model_hr_promote_type"/>      
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record model="ir.rule" id="record_hr_cc_multi_company_rule">    
+        <field name="name">Multicompany Rule Hr cc</field>    
+        <field name="model_id" ref="model_hr_cc"/>      
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+
+</odoo>

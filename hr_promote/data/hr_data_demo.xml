@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_promote_type_transfer" model="hr.promote.type">
+        <field name="name">Mutation</field>
+        <field name="code">MT</field>
+        <field name="type">external</field>
+    </record>
+
+    <record id="hr_promote_type_promotion" model="hr.promote.type">
+        <field name="name">Promotion</field>
+        <field name="code">PR</field>
+        <field name="type">internal</field>
+    </record>
+
+    <record id="hr_promote_type_demotion" model="hr.promote.type">
+        <field name="name">Demotion</field>
+        <field name="code">DM</field>
+        <field name="type">internal</field>
+    </record>
+
+    <record id="hr_promote_type_demotion" model="hr.promote.type">
+        <field name="name">Demotion</field>
+        <field name="code">DM</field>
+        <field name="type">internal</field>
+    </record>
+
+    <record id="hr_cc_human_resource" model="hr.cc">
+        <field name="name">Human Resource Department</field> 
+    </record>
+
+    <record id="hr_cc_human_directur" model="hr.cc">
+        <field name="name">Directur</field> 
+    </record>
+
+    <record id="hr_cc_human_directur" model="hr.cc">
+        <field name="name">Chief Executive Officer</field> 
+    </record>
+
+    
+
+</odoo>

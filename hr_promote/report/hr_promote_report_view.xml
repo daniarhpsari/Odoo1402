@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_employee_promote_notice">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="text-center">
+                            <u><span t-field="doc.type_id"/> Letter</u>
+                        </h2>
+                        <h6 style="margin-top:0px;" class="text-center">
+                            No: <span t-field="doc.name"/>
+                        </h6>
+                        <div class="row mt-1">
+                            <div class="col-12 text-right">
+                                <h5>
+                                    <span t-field="doc.company_id.city" style="text-transform: capitalize;"/>,
+                                    <span t-field="doc.date" t-options='{"format": "dd MMMM yyyy"}'/>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-auto mw-100">
+                                <h5><strong>Subject :</strong><span style="font-size: 20px;" t-field="doc.type_id"/></h5>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <p class="m-1" style="text-indent: 2em;font-size: 20px;" align="justify">
+                                    In order to obtain optimum results and in accordance with the development of the company
+                                    nowadays, it is deemed necessary to carry out <span t-field='doc.type_id'/> environmental employees <span t-field='doc.company_id.name'/>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="m-1" style="text-indent: 3em;font-size: 20px;">
+                                    Starting <span t-field='doc.start_date'/>, the company will <span t-field='doc.type_id'/> as follows:
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row" style="font-size: 20px;">
+                            <div class="ml-1 col-3">
+                                Employee Name
+                            </div>
+                            <div class="col-auto">
+                                : <span t-field='doc.employee_id'/>
+                            </div>
+                        </div>
+                        <div class="row mb-3" style="font-size: 20px;">
+                            <div class="ml-1 col-3">
+                                Indentification No
+                            </div>
+                            <div class="col-auto">
+                                : <span t-field='doc.employee_id.identification_id'/>
+                            </div>
+                        </div>
+                        <table class="table table-sm table-bordered">
+                            <tr>
+                                <td><strong>Description</strong></td>
+                                <td><strong>Current</strong></td>
+                                <td><strong>New</strong></td>
+                            </tr>
+                            <tr t-if="doc.code in 'external'">
+                                <td>Company</td>
+                                <td><span t-field="doc.company_id"/></td>
+                                <td><span t-field="doc.transfer_company_id"/></td>
+                            </tr>
+                            <tr t-if="doc.code not in 'external'">
+                                <td>Job Position</td>
+                                <td><span t-field="doc.job_id"/></td>
+                                <td><span t-field="doc.new_job_id"/></td>
+                            </tr>
+                            <tr t-if="doc.code not in 'external'">
+                                <td>Department</td>
+                                <td><span t-field="doc.department_id"/></td>
+                                <td><span t-field="doc.new_department_id"/></td>
+                            </tr>
+                            <tr t-if="doc.code not in 'external'">
+                                <td>Employee Type</td>
+                                <td><span t-field="doc.employee_type_id"/></td>
+                                <td><span t-field="doc.new_employee_type_id"/></td>
+                            </tr>
+                        </table>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <p class="m-1" style="text-indent: 2em;font-size: 20px;" align="justify">
+                                    The probationary period as a <span t-field="doc.new_job_id"/> is for 3 month. In carrying out duties at
+                                    The positions above are under and responsible to <span t-field="doc.new_parent_id"/> as <span t-field="doc.new_parent_id.job_id"/>
+                                    at <span t-field="doc.company_id.name"/>.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="ml64 mr4" name="signature">
+                            <div class="offset-7 text-center">
+                                <strong>
+                                    <span t-field="doc.company_id.city" style="text-transform: capitalize;"/>,
+                                    <span  t-esc="context_timestamp(datetime.datetime.now()).strftime('%d %B %Y')"/>
+                                </strong>
+                            </div>
+                                <div class="offset-7 text-center">
+                                    <img t-if="doc.hr_staff_signature" t-att-src="image_data_uri(doc.hr_staff_signature)" style="max-height: 3cm; max-width: 6cm;"/>
+                                    <br/><u>
+                                        <span t-if="not doc.hr_staff_signature" style="margin-top:90px;" t-field="doc.hr_staff_uid"/>
+                                        <span t-if="doc.hr_staff_signature" t-field="doc.hr_staff_uid"/>
+                                    </u><br/>
+                                    <span t-field="doc.hr_staff_uid.employee_id.job_id"/>
+                                </div>
+
+                        </div>
+                        <p class="ml-1">
+                            C.C: 
+                            <ol class="ml-5">
+                                <t t-foreach="doc.cc_ids" t-as="l">
+                                    <li><span t-field="l.name"/></li>
+                                </t>
+                            </ol> 
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
